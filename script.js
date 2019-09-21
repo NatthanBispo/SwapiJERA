@@ -1,18 +1,31 @@
+var setado = [];
+var request = new XMLHttpRequest();
+var vetor;
+
+request.open('GET', 'https://swapi.co/api/films', false);
+request.send();
+vetor = (JSON.parse(request.response)).results;
+vetor.forEach(getHtml)
+
 function getNames(item, destino){
-    item = item.split(",");
-    var lista = document.createElement("div");
-    for (var i = 0; i < item.length; i++) {
-        request2 = new XMLHttpRequest();
-        request2.open('GET', item[i], false);   
-        request2.send();
-        var jsonresult = JSON.parse(request2.response)
-        console.log(jsonresult.name);
-        
-        var da = document.createElement("h5");
-            da.appendChild(document.createTextNode(jsonresult.name));
-        lista.appendChild(da);
+    console.log(setado)
+    if(!setado.includes(destino)){
+        item = item.split(",");
+        var lista = document.createElement("div");
+        for (var i = 0; i < item.length; i++) {
+            request2 = new XMLHttpRequest();
+            request2.open('GET', item[i], false);   
+            request2.send();
+            var jsonresult = JSON.parse(request2.response)
+            console.log(jsonresult.name);
+            
+            var da = document.createElement("h5");
+                da.appendChild(document.createTextNode(jsonresult.name));
+            lista.appendChild(da);
+        }
+        document.querySelector("#"+destino).appendChild(lista)
+        setado.push(destino)
     }
-    document.querySelector("#"+destino).appendChild(lista);
 }
 
 function getHtml(item, indice, array) {        
@@ -167,14 +180,7 @@ function getHtml(item, indice, array) {
     document.body.appendChild(divCard);
 }
 
-var request = new XMLHttpRequest();
-var vetor;
 
-request.open('GET', 'https://swapi.co/api/films', false);
-request.send();
-vetor = (JSON.parse(request.response)).results;
-vetor.forEach(getHtml)
-var t = false;
 /*
 request.onload = function () {
     vetor = (JSON.parse(request.response)).results;
