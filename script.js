@@ -1,27 +1,35 @@
 var setado = [];
 var request = new XMLHttpRequest();
-var vetor;
+var requestResponse;
 
 request.open('GET', 'https://swapi.co/api/films', false);
 request.send();
-vetor = (JSON.parse(request.response)).results;
-vetor.forEach(getHtml)
+requestResponse = (JSON.parse(request.response)).results;
+requestResponse.forEach(getHtml)
 
-function getNames(item, destino){
-    console.log(setado)
+function getLista(item, destino){
+    //console.log(setado)
     if(!setado.includes(destino)){
         item = item.split(",");
         var lista = document.createElement("div");
+            lista.setAttribute('class', 'lista');
         for (var i = 0; i < item.length; i++) {
-            request2 = new XMLHttpRequest();
-            request2.open('GET', item[i], false);   
-            request2.send();
-            var jsonresult = JSON.parse(request2.response)
-            console.log(jsonresult.name);
-            
-            var da = document.createElement("h5");
-                da.appendChild(document.createTextNode(jsonresult.name));
-            lista.appendChild(da);
+            try{
+                request2 = new XMLHttpRequest();
+                request2.open('GET', item[i], false);   
+                request2.send();
+    
+                var jsonresult = JSON.parse(request2.response)
+                //console.log(jsonresult.name);
+                
+                var node = document.createElement("h6");
+                    node.appendChild(document.createTextNode(jsonresult.name));
+                lista.appendChild(node);
+            } catch(err) {
+                var node = document.createElement("h6");
+                    node.appendChild(document.createTextNode("Nao ha elementos"));
+                lista.appendChild(node);
+            }
         }
         document.querySelector("#"+destino).appendChild(lista)
         setado.push(destino)
@@ -45,15 +53,15 @@ function getHtml(item, indice, array) {
     var episode_id = document.createElement("h6");
         episode_id.setAttribute('id', 'episode_id'+indice+'');
         episode_id.setAttribute('class', 'card-subtitle mb-2 text-muted');
-        episode_id.appendChild(document.createTextNode(item.episode_id));
+        episode_id.appendChild(document.createTextNode("Episode: "+item.episode_id));
 
     var director = document.createElement("h5");
         director.setAttribute('id', 'director'+indice+'');
-        director.appendChild(document.createTextNode(item.director));
+        director.appendChild(document.createTextNode("Director: "+item.director));
 
     var release_date = document.createElement("h5");
         release_date.setAttribute('id', 'release_date'+indice+'');
-        release_date.appendChild(document.createTextNode(item.release_date));
+        release_date.appendChild(document.createTextNode("Date of release: "+item.release_date));
 
     // Dropdown Characters
     var divDropdownCharacters = document.createElement("div");
@@ -66,7 +74,7 @@ function getHtml(item, indice, array) {
         aBtnCharacters.setAttribute('data-toggle', 'dropdown');
         aBtnCharacters.setAttribute('aria-haspopup', 'true');
         aBtnCharacters.setAttribute('aria-expanded', 'false');
-        aBtnCharacters.setAttribute('onclick', 'getNames("'+item.characters+'", "characters'+indice+'")');
+        aBtnCharacters.setAttribute('onclick', 'getLista("'+item.characters+'", "characters'+indice+'")');
         aBtnCharacters.appendChild(document.createTextNode("Characters"));
         
     var divCharacters = document.createElement("div");
@@ -85,7 +93,7 @@ function getHtml(item, indice, array) {
         aBtnPlanets.setAttribute('data-toggle', 'dropdown');
         aBtnPlanets.setAttribute('aria-haspopup', 'true');
         aBtnPlanets.setAttribute('aria-expanded', 'false');
-        aBtnPlanets.setAttribute('onclick', 'getNames("'+item.planets+'", "planets'+indice+'")');
+        aBtnPlanets.setAttribute('onclick', 'getLista("'+item.planets+'", "planets'+indice+'")');
         aBtnPlanets.appendChild(document.createTextNode("Planets"));
         
     var divPlanets = document.createElement("div");
@@ -104,7 +112,7 @@ function getHtml(item, indice, array) {
         aBtnStarships.setAttribute('data-toggle', 'dropdown');
         aBtnStarships.setAttribute('aria-haspopup', 'true');
         aBtnStarships.setAttribute('aria-expanded', 'false');
-        aBtnStarships.setAttribute('onclick', 'getNames("'+item.starships+'", "starships'+indice+'")');
+        aBtnStarships.setAttribute('onclick', 'getLista("'+item.starships+'", "starships'+indice+'")');
         aBtnStarships.appendChild(document.createTextNode("Starships"));
         
     var divStarships = document.createElement("div");
@@ -123,7 +131,7 @@ function getHtml(item, indice, array) {
         aBtnVehicles.setAttribute('data-toggle', 'dropdown');
         aBtnVehicles.setAttribute('aria-haspopup', 'true');
         aBtnVehicles.setAttribute('aria-expanded', 'false');
-        aBtnVehicles.setAttribute('onclick', 'getNames("'+item.vehicles+'", "vehicles'+indice+'")');
+        aBtnVehicles.setAttribute('onclick', 'getLista("'+item.vehicles+'", "vehicles'+indice+'")');
         aBtnVehicles.appendChild(document.createTextNode("Vehicles"));
         
     var divVehicles = document.createElement("div");
@@ -142,7 +150,7 @@ function getHtml(item, indice, array) {
         aBtnSpecies.setAttribute('data-toggle', 'dropdown');
         aBtnSpecies.setAttribute('aria-haspopup', 'true');
         aBtnSpecies.setAttribute('aria-expanded', 'false');
-        aBtnSpecies.setAttribute('onclick', 'getNames("'+item.species+'", "species'+indice+'")');
+        aBtnSpecies.setAttribute('onclick', 'getLista("'+item.species+'", "species'+indice+'")');
         aBtnSpecies.appendChild(document.createTextNode("Species"));
         
     var divSpecies = document.createElement("div");
@@ -177,32 +185,6 @@ function getHtml(item, indice, array) {
 
     divCard.appendChild(divCardBody);
 
-    document.body.appendChild(divCard);
+    //document.body.appendChild(divCard);
+    document.querySelector("#conteudo").appendChild(divCard)
 }
-
-
-/*
-request.onload = function () {
-    vetor = (JSON.parse(request.response)).results;
-    console.log("json")
-    if(t == false){
-        vetor.forEach(getHtml)
-        t = true;
-    }
-}
-/*
-function criarObjs(item, indice, array){
-    arrayFilmes.push(item.title, item.episode_id, item.director);
-    
-    item.characters.forEach(drop);
-}
-
-function imprimir(item, indice, array){
-    const titulo = document.querySelector("#titulo");
-        titulo.innerHTML = item.title;
-    const episode_id = document.querySelector("#episode_id");
-        episode_id.innerHTML = "Episodio: " + item.episode_id;
-    const director = document.querySelector("#director");
-        director.innerHTML = "Diretor: " + item.director;
-    //item.characters.forEach(drop);
-}*/
